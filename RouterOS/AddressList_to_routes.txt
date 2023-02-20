@@ -1,8 +1,6 @@
-:local addressList "droplist"  # Replace with the name of your address list
-:local network
-:local netmask
-:foreach address in=[/ip firewall address-list find list=$addressList] do={
-  :set network [:pick $address 0 [:find $address "/"]]
-  :set netmask [:pick $address ([:find $address "/"] + 1) [:len $address]]
-  /ip route add dst-address=$network/$netmask blackhole
-}
+/ip route remove [find where comment="droplist"]
+:delay 2000ms;
+:foreach i in=[/ip firewall address-list find list=drop_list] do={
+:local ip [/ip firewall address-list get $i address]; /ip route add dst-address=$ip blackhole comment="droplist";
+} 
+
